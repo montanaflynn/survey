@@ -15,15 +15,16 @@ and accepts the input with the enter key. Response type is a string.
 */
 type Input struct {
 	Renderer
-	Message       string
-	Default       string
-	Help          string
-	Suggest       func(toComplete string) []string
-	typedAnswer   string
-	answer        string
-	options       []core.OptionAnswer
-	selectedIndex int
-	showingHelp   bool
+	Message        string
+	Default        string
+	DefaultPointer *string
+	Help           string
+	Suggest        func(toComplete string) []string
+	typedAnswer    string
+	answer         string
+	options        []core.OptionAnswer
+	selectedIndex  int
+	showingHelp    bool
 }
 
 // data available to the templates when processing
@@ -132,6 +133,11 @@ func (i *Input) OnChange(key rune, config *PromptConfig) (bool, error) {
 }
 
 func (i *Input) Prompt(config *PromptConfig) (interface{}, error) {
+
+	if i.DefaultPointer != nil {
+		i.Default = *i.DefaultPointer
+	}
+
 	// render the template
 	err := i.Render(
 		InputQuestionTemplate,
